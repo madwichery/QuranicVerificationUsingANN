@@ -1,0 +1,69 @@
+import numpy as np
+
+from preprocess import *
+import keras
+from keras.models import Sequential
+from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPooling2D, LSTM
+from keras.utils import to_categorical
+import wandb
+from wandb.keras import WandbCallback
+import matplotlib.pyplot as plt
+
+iterasi = 1
+for iterasi<=10:
+    project = "Klasifikasi-ANN-Dropout-Quran"
+
+    wandb.init(project=project)
+    config = wandb.config
+
+    config.max_len = 10
+    config.buckets = 20
+
+    # Save data to array file first
+    save_data_to_array(max_len=config.max_len, n_mfcc=config.buckets)
+
+    labels=["108001",
+        "108002",
+        "108003",
+        "109001",
+        "109002",
+        "109003",
+        "109004",
+        "109005",
+        "109006",
+        "110001",
+        "110002",
+        "110003",
+        "111001",
+        "111002",
+        "111003",
+        "111004",
+        "111005",
+        "112001",
+        "112002",
+        "112003",
+        "112004",
+        "113001",
+        "113002",
+        "113003",
+        "113004",
+        "113005",
+        "114001",
+        "114002",
+        "114003",
+        "114004",
+        "114005",
+        "114006"]
+
+    # Loading train set and test set
+    X_train, X_test, y_train, y_test = get_train_test()
+
+    # # Feature dimension
+    channels = 1
+    config.epochs = 50
+    config.batch_size = 1
+
+    num_classes = 32
+
+    X_train = X_train.reshape(X_train.shape[0], config.buckets, config.max_len, channels)
+    X_test = X_test.reshape(X_test.shape[0], config.buckets, config.max_len, channels)
